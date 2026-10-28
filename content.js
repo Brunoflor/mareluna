@@ -30,6 +30,8 @@ window.MARELUNA_CONTENT = {
     "emailHref": "mailto:info@marelunasdc.com",
     "facebook": "https://www.facebook.com/marelunasdc/",
     "website": "https://www.marelunasdc.com/",
+    "seaSourceUrl": "https://freesound.org/people/bassimat/sounds/861755/",
+    "seaLicenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
     "coordinates": {
       "it": "40.83° Nord – 14.24° Est",
       "en": "40.83° N – 14.24° E",
@@ -65,27 +67,38 @@ window.MARELUNA_CONTENT = {
       "ja": "ナポリの海岸通り、Mareluna Suite de Charme のデジタルウェルカムブック。",
       "ar": "كتاب ترحيب رقمي لضيوف Mareluna Suite de Charme على كورنيش نابولي."
     },
-    "welcome": {
-      "it": "Vi diamo il benvenuto",
-      "en": "Welcome",
-      "es": "Os damos la bienvenida",
-      "fr": "Nous vous souhaitons la bienvenue",
-      "de": "Willkommen",
-      "pt": "Damos-vos as boas-vindas",
-      "zh": "欢迎光临",
-      "ja": "ようこそ",
-      "ar": "أهلاً بكم"
+            "seaLabel": {
+      "it": "Ascolta il lungomare",
+      "en": "Listen to the seafront",
+      "es": "Escucha el paseo marítimo",
+      "fr": "Écoutez le front de mer",
+      "de": "Die Uferpromenade hören",
+      "pt": "Ouvir o passeio marítimo",
+      "zh": "聆听海滨",
+      "ja": "海岸通りを聴く",
+      "ar": "استمع إلى الكورنيش"
     },
-    "heroAlt": {
-      "it": "Finestra aperta sul Golfo di Napoli",
-      "en": "Open window onto the Gulf of Naples",
-      "es": "Ventana abierta al Golfo de Nápoles",
-      "fr": "Fenêtre ouverte sur le golfe de Naples",
-      "de": "Geöffnetes Fenster zum Golf von Neapel",
-      "pt": "Janela aberta para o Golfo de Nápoles",
-      "zh": "面向那不勒斯海湾的敞开窗户",
-      "ja": "ナポリ湾に開いた窓",
-      "ar": "نافذة مفتوحة على خليج نابولي"
+    "seaVolume": {
+      "it": "Volume del lungomare",
+      "en": "Seafront volume",
+      "es": "Volumen del paseo",
+      "fr": "Volume du front de mer",
+      "de": "Lautstärke der Promenade",
+      "pt": "Volume do passeio",
+      "zh": "海滨音量",
+      "ja": "海岸通りの音量",
+      "ar": "مستوى صوت الكورنيش"
+    },
+    "seaCredit": {
+      "it": "Audio: bassimat, onde e gabbiani sul mare Ionio (Puglia, non il lungomare di Napoli),",
+      "en": "Audio: bassimat, waves and gulls on the Ionian Sea (Puglia, not the Naples seafront),",
+      "es": "Audio: bassimat, olas y gaviotas en el mar Jónico (Apulia, no el paseo de Nápoles),",
+      "fr": "Audio : bassimat, vagues et goélands sur la mer Ionienne (Pouilles, pas le front de mer de Naples),",
+      "de": "Audio: bassimat, Wellen und Möwen am Ionischen Meer (Apulien, nicht die Uferpromenade von Neapel),",
+      "pt": "Áudio: bassimat, ondas e gaivotas no mar Jónico (Puglia, não o passeio de Nápoles),",
+      "zh": "音频：bassimat，伊奥尼亚海的海浪与海鸥（普利亚，不是那不勒斯海滨），",
+      "ja": "音声：bassimat、イオニア海の波とカモメ（プーリア。ナポリの海岸通りではありません）、",
+      "ar": "الصوت: bassimat، أمواج ونوارس على البحر الأيوني (بوليا، وليس كورنيش نابولي)،"
     },
     "languageLabel": {
       "it": "Lingua",
@@ -360,22 +373,7 @@ window.MARELUNA_CONTENT = {
         "ja": "客室とスイート",
         "ar": "الغرف والجناح"
       },
-      "image": {
-        "src": "photos/terrace.jpg",
-        "webp": "photos/terrace.webp",
-        "alt": {
-          "it": "Tavolino sul balcone, con il golfo oltre la ringhiera",
-          "en": "A small table on the balcony, the gulf beyond the railing",
-          "es": "Mesita en el balcón, con el golfo más allá de la barandilla",
-          "fr": "Petite table sur le balcon, le golfe au-delà de la balustrade",
-          "de": "Kleiner Tisch auf dem Balkon, der Golf hinter dem Geländer",
-          "pt": "Mesinha na varanda, com o golfo para lá da balaustrada",
-          "zh": "阳台小桌，栏杆外是海湾",
-          "ja": "バルコニーの小さなテーブル。手すりの向こうは湾",
-          "ar": "طاولة صغيرة على الشرفة، والخليج خلف السياج"
-        }
-      },
-      "paragraphs": [
+            "paragraphs": [
         {
           "it": "Ci sono 6 camere, tutte con bagno interno e balcone privato con vista laterale sul mare, pensate per il comfort e l'eleganza.",
           "en": "There are 6 rooms, each with a private bathroom and a private balcony with a side sea view, arranged for comfort and elegance.",
@@ -582,22 +580,7 @@ window.MARELUNA_CONTENT = {
         "ja": "建物",
         "ar": "المبنى"
       },
-      "image": {
-        "src": "photos/reception.jpg",
-        "webp": "photos/reception.webp",
-        "alt": {
-          "it": "Angolo dell'accoglienza, con una lampada, fiori e una valigia d'epoca",
-          "en": "A corner of the house, with a lamp, flowers and a vintage suitcase",
-          "es": "Un rincón de la casa, con una lámpara, flores y una maleta antigua",
-          "fr": "Un coin de la maison, avec une lampe, des fleurs et une valise ancienne",
-          "de": "Eine Ecke des Hauses, mit Lampe, Blumen und einem alten Koffer",
-          "pt": "Um canto da casa, com um candeeiro, flores e uma mala antiga",
-          "zh": "屋内一角：灯、花和一只老行李箱",
-          "ja": "室内の一角。ランプと花、古いスーツケース",
-          "ar": "ركن من البيت، مع مصباح وزهور وحقيبة قديمة"
-        }
-      },
-      "paragraphs": [
+            "paragraphs": [
         {
           "it": "La struttura è in un palazzo di fine Ottocento. È accogliente e arredata in stile moderno, con morbide contaminazioni classiche: lampadari di cristallo di Murano, una grande lanterna del Settecento, vecchie valigie e cappelliere — una collezione privata — che ricordano i viaggiatori di un tempo.",
           "en": "The house is in a late-19th-century building. It is welcoming and furnished in a modern style, with soft classical touches: Murano crystal chandeliers, a large 18th-century lantern, and old suitcases and hat boxes — a private collection — that recall travellers of another time.",
@@ -1620,22 +1603,7 @@ window.MARELUNA_CONTENT = {
         "ja": "見どころ",
         "ar": "ما يمكن رؤيته"
       },
-      "image": {
-        "src": "photos/castel.jpg",
-        "webp": "photos/castel.webp",
-        "alt": {
-          "it": "Castel dell'Ovo sul lungomare, al crepuscolo",
-          "en": "Castel dell'Ovo on the seafront at dusk",
-          "es": "Castel dell'Ovo en el paseo marítimo, al anochecer",
-          "fr": "Castel dell'Ovo sur le front de mer, au crépuscule",
-          "de": "Castel dell'Ovo an der Uferpromenade in der Dämmerung",
-          "pt": "Castel dell'Ovo no passeio marítimo, ao crepúsculo",
-          "zh": "黄昏时分海滨上的蛋堡",
-          "ja": "黄昏の海岸通りに立つカステル・デッローヴォ",
-          "ar": "قصر كاستل ديلوفو على الكورنيش عند الغسق"
-        }
-      },
-      "paragraphs": [
+            "paragraphs": [
         {
           "it": "Pochi minuti a piedi e siete davanti al Castel dell'Ovo, a Piazza del Plebiscito, al Palazzo Reale e al Teatro San Carlo.",
           "en": "A few minutes on foot and you are in front of Castel dell'Ovo, Piazza del Plebiscito, the Royal Palace and the Teatro San Carlo.",
