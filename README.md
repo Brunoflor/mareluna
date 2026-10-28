@@ -64,7 +64,7 @@ Poi si apre [http://localhost:8000](http://localhost:8000).
 
 ## Pubblicazione
 
-Il sito sarà pubblicato su GitHub Pages: https://brunoflor.github.io/mareluna/ (non ancora attivo).
+Il sito è online su GitHub Pages: [brunoflor.github.io/mareluna](https://brunoflor.github.io/mareluna/).
 
 ## Stato
 
