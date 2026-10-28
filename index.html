@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mareluna Suite de Charme</title>
+    <meta
+      name="description"
+      content="Libro di benvenuto digitale per gli ospiti di Mareluna Suite de Charme, sul lungomare di Napoli."
+    />
+    <meta name="theme-color" content="#00508f" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="favicon.svg?v=1.0.0" type="image/svg+xml" />
+    <link rel="icon" href="favicon-32.png?v=1.0.0" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1.0.0" />
+    <link rel="preload" as="image" href="icons/logo.svg?v=1.0.0" fetchpriority="high" />
+    <link rel="preload" as="image" href="photos/hero-800.webp?v=1.0.0" type="image/webp" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Naskh+Arabic:wght@500;600;700&family=Noto+Serif+JP:wght@500;600&family=Noto+Serif+SC:wght@500;600&family=Simonetta:ital,wght@0,400;0,900;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=1.0.0" />
+    <script>
+      window.MARELUNA_VERSION = "1.0.0";
+      (function () {
+        var codes = { it: 1, en: 1, es: 1, fr: 1, de: 1, pt: 1, zh: 1, ja: 1, ar: 1 };
+        function match(tag) {
+          var value = String(tag || "").toLowerCase().replace(/_/g, "-");
+          if (value.indexOf("zh") === 0) return "zh";
+          var base = value.split("-")[0];
+          return codes[base] ? base : "";
+        }
+        var lang = "it";
+        try {
+          var saved = localStorage.getItem("mareluna-lang");
+          if (codes[saved]) {
+            lang = saved;
+          } else {
+            var list = navigator.languages && navigator.languages.length
+              ? navigator.languages
+              : [navigator.language || "it"];
+            for (var i = 0; i < list.length; i++) {
+              var hit = match(list[i]);
+              if (hit) {
+                lang = hit;
+                break;
+              }
+            }
+          }
+        } catch (e) {
+          lang = "it";
+        }
+        var root = document.documentElement;
+        root.lang = lang;
+        root.dir = lang === "ar" ? "rtl" : "ltr";
+        root.dataset.lang = lang;
+        try {
+          var seen = sessionStorage.getItem("mareluna-intro") === "1";
+          var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          if (seen || reduceMotion) root.classList.add("intro-seen");
+        } catch (e) {
+          /* private mode */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="intro" class="intro">
+      <img
+        id="intro-logo"
+        class="intro-logo"
+        src="icons/logo.svg?v=1.0.0"
+        alt=""
+        width="300"
+        height="318"
+        fetchpriority="high"
+        draggable="false"
+      />
+      <button type="button" id="intro-skip" class="intro-skip"></button>
+    </div>
+    <noscript>
+      <style>
+        #intro { display: none; }
+        html:not(.intro-seen) .logo,
+        html:not(.intro-seen) .hero { visibility: visible; opacity: 1; }
+      </style>
+    </noscript>
+    <div class="wrap" id="wrap">
+      <a class="skip" id="skip" href="#sections">Vai alle sezioni</a>
+      <header class="site-header">
+        <div class="header-bar">
+          <div id="lang-switch" class="lang"></div>
+        </div>
+        <h1 class="logo-lockup">
+          <img
+            class="logo"
+            src="icons/logo.svg?v=1.0.0"
+            alt="Mareluna Suite de Charme"
+            width="300"
+            height="318"
+          />
+        </h1>
+        <p id="welcome-line" class="welcome-line"></p>
+      </header>
+      <figure class="hero">
+        <picture>
+          <source
+            type="image/webp"
+            srcset="photos/hero-800.webp?v=1.0.0 800w, photos/hero.webp?v=1.0.0 1200w"
+            sizes="(max-width: 900px) 100vw, 960px"
+          />
+          <img
+            id="hero-img"
+            src="photos/hero.jpg?v=1.0.0"
+            alt="Finestra aperta sul Golfo di Napoli"
+            width="1200"
+            height="801"
+          />
+        </picture>
+      </figure>
+      <main>
+        <noscript>
+          <p class="noscript">
+            Attivate JavaScript per usare la guida. Enable JavaScript to use the guide.
+          </p>
+        </noscript>
+        <div id="sections"></div>
+        <p id="home-address" class="home-address"></p>
+        <p id="home-phone" class="home-phone"></p>
+      </main>
+    </div>
+
+    <dialog id="sheet" class="sheet" aria-labelledby="sheet-title">
+      <div class="sheet-panel">
+        <div class="sheet-bar">
+          <button type="button" class="back" id="sheet-back">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 5 8 12l7 7" />
+            </svg>
+            <span id="back-label">Indietro</span>
+          </button>
+          <div id="sheet-lang" class="lang"></div>
+          <h2 id="sheet-title" class="sheet-title"></h2>
+        </div>
+        <div id="sheet-body" class="sheet-body"></div>
+      </div>
+    </dialog>
+    <p id="live" class="visually-hidden" aria-live="polite"></p>
+
+    <script src="content.js?v=1.0.0"></script>
+    <script src="app.js?v=1.0.0"></script>
+  </body>
+</html>
