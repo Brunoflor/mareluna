@@ -16,6 +16,7 @@ import math
 import os
 import traceback
 
+import bmesh
 import bpy
 from mathutils import Vector
 
@@ -156,11 +157,12 @@ def rig():
         bg.inputs["Color"].default_value = (1, 1, 1, 1)
         bg.inputs["Strength"].default_value = 0.12
 
-    bpy.ops.object.camera_add(location=(2.55, -2.65, 2.05))
+    # Friendlier three-quarter front view, framed tight so the object fills the icon.
+    bpy.ops.object.camera_add(location=(1.15, -3.65, 1.7))
     cam = bpy.context.active_object
     cam.data.type = "ORTHO"
-    cam.data.ortho_scale = 3.05
-    look_at(cam, (0, 0, 0.42))
+    cam.data.ortho_scale = 2.2
+    look_at(cam, (0, 0, 0.75))
     scene.camera = cam
 
     def light(name, loc, energy, size, color):
@@ -186,12 +188,38 @@ def parent_all_to_empty():
 
 # --- subjects --------------------------------------------------------------
 
+def arc(major, minor, z, mat="blue"):
+    obj = add(
+        "torus",
+        mat=mat,
+        bevel_width=0,
+        major_radius=major,
+        minor_radius=minor,
+        location=(0, 0, z),
+        major_segments=40,
+        minor_segments=12,
+    )
+    obj.rotation_euler = (math.radians(90), 0, 0)
+    activate(obj)
+    bpy.ops.object.transform_apply(rotation=True)
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    kill = [v for v in bm.verts if (v.co.z - z) < -0.005]
+    bmesh.ops.delete(bm, geom=kill, context="VERTS")
+    bm.to_mesh(obj.data)
+    obj.data.update()
+    bm.free()
+    return obj
+
+
 def concierge():
-    add("cone", radius1=0.4, radius2=0.26, depth=0.62, location=(0, 0, 0.42), vertices=32)
-    add("sphere", radius=0.24, location=(0, -0.04, 0.9), segments=24, ring_count=16)
-    add("cyl", mat="deep", radius=0.46, depth=0.07, location=(0, 0, 1.08), vertices=36)
-    add("cyl", radius=0.22, depth=0.26, location=(0, 0, 1.24), vertices=28)
-    add("sphere", mat="gold", bevel_width=0.008, radius=0.055, location=(0, -0.28, 0.48))
+    add("cyl", radius=0.42, depth=0.62, location=(0, 0, 0.4), vertices=32)
+    add("sphere", radius=0.28, location=(0, -0.04, 0.88), segments=24, ring_count=16)
+    add("cyl", mat="white", radius=0.55, depth=0.08, location=(0, -0.02, 1.1), vertices=40)
+    add("cyl", radius=0.26, depth=0.28, location=(0, 0, 1.28), vertices=28)
+    add("sphere", radius=0.18, location=(0, 0, 1.46), segments=16, ring_count=12)
+    add("sphere", mat="gold", bevel_width=0.006, radius=0.07, location=(0, -0.4, 0.48))
+    add("sphere", mat="gold", bevel_width=0.006, radius=0.055, location=(0, -0.4, 0.66))
 
 
 def colazione():
@@ -200,8 +228,12 @@ def colazione():
     add("torus", mat="blue", bevel_width=0, major_radius=0.16, minor_radius=0.055, location=(0.42, 0, 0.36), major_segments=28, minor_segments=12)
     handle = bpy.context.active_object
     handle.rotation_euler = (0, math.radians(90), 0)
-    add("sphere", mat="tint", bevel_width=0.008, radius=0.07, location=(-0.06, -0.04, 0.78))
-    add("sphere", mat="tint", bevel_width=0.008, radius=0.05, location=(0.08, 0.02, 0.96))
+    add("torus", mat="gold", bevel_width=0, major_radius=0.24, minor_radius=0.075, location=(0.32, 0.02, 0.2), major_segments=28, minor_segments=10)
+    croissant = bpy.context.active_object
+    croissant.scale = (1.2, 0.4, 0.32)
+    croissant.rotation_euler = (math.radians(75), math.radians(20), math.radians(50))
+    add("sphere", mat="tint", bevel_width=0.006, radius=0.07, location=(-0.1, -0.08, 0.78))
+    add("sphere", mat="tint", bevel_width=0.006, radius=0.05, location=(0.0, -0.04, 0.96))
 
 
 def bed():
@@ -215,34 +247,32 @@ def bed():
 
 
 def palazzo():
-    add("cube", location=(0, 0, 0.55), scale=(0.62, 0.42, 0.5))
-    add("cone", mat="deep", radius1=0.78, radius2=0.02, depth=0.38, location=(0, 0, 1.18), vertices=4)
-    roof = bpy.context.active_object
-    roof.rotation_euler = (0, 0, math.radians(45))
-    add("cube", mat="gold", bevel_width=0.01, location=(0, -0.42, 0.32), scale=(0.14, 0.04, 0.22))
-    for x in (-0.28, 0.28):
-        add("cube", mat="tint", bevel_width=0.012, location=(x, -0.42, 0.72), scale=(0.12, 0.03, 0.14))
+    add("cube", location=(0, 0, 0.62), scale=(0.82, 0.26, 0.58))
+    add("cube", mat="deep", bevel_width=0.008, location=(0, -0.02, 1.24), scale=(0.9, 0.3, 0.07))
+    add("cube", mat="white", bevel_width=0.008, location=(0, -0.28, 0.28), scale=(0.13, 0.04, 0.22))
+    for z in (0.58, 0.92):
+        for x in (-0.46, 0, 0.46):
+            if z < 0.7 and x == 0:
+                continue
+            add("cube", mat="tint", bevel_width=0.008, location=(x, -0.28, z), scale=(0.12, 0.035, 0.13))
 
 
 def checkin():
-    add("torus", bevel_width=0, major_radius=0.28, minor_radius=0.08, location=(-0.35, 0, 0.55), major_segments=32, minor_segments=12)
-    add("cyl", radius=0.07, depth=0.85, location=(0.22, 0, 0.55), vertices=16)
+    add("torus", bevel_width=0, major_radius=0.36, minor_radius=0.11, location=(-0.22, 0, 0.62), major_segments=36, minor_segments=14)
+    add("cyl", radius=0.1, depth=1.15, location=(0.35, 0, 0.55), vertices=20)
     shaft = bpy.context.active_object
-    shaft.rotation_euler = (0, math.radians(90), 0)
-    add("cube", bevel_width=0.01, location=(0.62, 0.1, 0.55), scale=(0.08, 0.1, 0.05))
-    add("cube", bevel_width=0.01, location=(0.5, 0.12, 0.55), scale=(0.06, 0.08, 0.05))
-    add("torus", mat="gold", bevel_width=0, major_radius=0.12, minor_radius=0.035, location=(-0.35, 0, 0.55), major_segments=24, minor_segments=10)
+    shaft.rotation_euler = (0, math.radians(78), math.radians(6))
+    add("cube", bevel_width=0.012, location=(0.88, 0.1, 0.38), scale=(0.12, 0.16, 0.07))
+    add("cube", bevel_width=0.012, location=(0.72, 0.12, 0.44), scale=(0.1, 0.14, 0.06))
+    add("cube", mat="white", bevel_width=0.012, location=(-0.62, -0.06, 0.22), scale=(0.18, 0.045, 0.26))
+    add("torus", mat="gold", bevel_width=0, major_radius=0.09, minor_radius=0.03, location=(-0.4, 0, 0.38), major_segments=20, minor_segments=8)
 
 
 def wifi():
-    add("cube", location=(0, 0.15, 0.16), scale=(0.62, 0.38, 0.06))
-    add("cube", mat="deep", location=(0, -0.02, 0.48), scale=(0.5, 0.05, 0.32))
-    screen = bpy.context.active_object
-    screen.rotation_euler = (math.radians(-18), 0, 0)
-    add("cube", mat="tint", bevel_width=0.012, location=(0, -0.1, 0.5), scale=(0.4, 0.02, 0.22))
-    face = bpy.context.active_object
-    face.rotation_euler = (math.radians(-18), 0, 0)
-    add("sphere", mat="white", bevel_width=0.008, radius=0.07, location=(0, -0.15, 0.95))
+    add("sphere", radius=0.13, location=(0, 0, 0.16), segments=18, ring_count=12)
+    arc(0.34, 0.075, 0.42)
+    arc(0.56, 0.08, 0.64)
+    arc(0.8, 0.085, 0.88)
 
 
 def services():
@@ -255,9 +285,9 @@ def services():
 
 
 def pin():
-    add("cone", radius1=0.34, radius2=0.0, depth=1.15, location=(0, 0, 0.5), vertices=36)
-    add("sphere", radius=0.38, location=(0, -0.02, 1.12), segments=28, ring_count=16)
-    add("sphere", mat="tint", bevel_width=0.008, radius=0.16, location=(0, -0.26, 1.16))
+    add("cone", radius1=0.46, radius2=0.0, depth=1.2, location=(0, 0, 0.5), vertices=40)
+    add("sphere", radius=0.5, location=(0, -0.02, 1.18), segments=28, ring_count=16)
+    add("sphere", mat="white", bevel_width=0.008, radius=0.22, location=(0, -0.34, 1.24))
 
 
 def parking():
@@ -281,27 +311,32 @@ def parking():
 
 
 def transport():
-    add("cube", location=(0, 0, 0.52), scale=(0.78, 0.26, 0.26))
-    add("cube", mat="tint", bevel_width=0.01, location=(-0.28, -0.26, 0.6), scale=(0.18, 0.035, 0.11))
-    add("cube", mat="tint", bevel_width=0.01, location=(0.24, -0.26, 0.6), scale=(0.18, 0.035, 0.11))
-    for x in (-0.46, 0.46):
-        add("cyl", mat="deep", bevel_width=0.012, radius=0.16, depth=0.14, location=(x, -0.08, 0.18), vertices=24)
+    add("cube", location=(0, 0, 0.55), scale=(0.82, 0.28, 0.36))
+    add("cube", mat="tint", bevel_width=0.01, location=(0, -0.3, 0.62), scale=(0.16, 0.04, 0.16))
+    add("cube", mat="tint", bevel_width=0.01, location=(-0.22, -0.22, 0.7), scale=(0.18, 0.04, 0.12))
+    add("cube", mat="tint", bevel_width=0.01, location=(0.28, -0.18, 0.7), scale=(0.2, 0.04, 0.12))
+    for x in (-0.48, 0.48):
+        add("cyl", mat="deep", bevel_width=0.01, radius=0.16, depth=0.16, location=(x, -0.1, 0.16), vertices=24)
         wheel = bpy.context.active_object
         wheel.rotation_euler = (0, math.radians(90), 0)
 
 
 def restaurant():
-    add("cyl", radius=0.055, depth=0.85, location=(-0.28, 0, 0.55), vertices=14)
-    handle = bpy.context.active_object
-    handle.rotation_euler = (0, math.radians(12), math.radians(-18))
-    for i, x in enumerate((-0.12, 0.0, 0.12)):
-        add("cyl", bevel_width=0.006, radius=0.035, depth=0.32, location=(-0.42 + x, -0.06, 1.02), vertices=10)
+    add("cyl", radius=0.78, depth=0.1, location=(0, 0.05, 0.12), vertices=48)
+    add("cyl", mat="white", radius=0.5, depth=0.05, location=(0, -0.02, 0.18), vertices=48)
+    add("cube", location=(-0.2, -0.04, 0.62), scale=(0.075, 0.055, 0.46))
+    fork = bpy.context.active_object
+    fork.rotation_euler = (math.radians(14), 0, math.radians(34))
+    for shift in (-0.12, 0.0, 0.12):
+        add("cube", bevel_width=0.003, location=(-0.52 + shift, -0.08, 1.05), scale=(0.04, 0.045, 0.18))
         tine = bpy.context.active_object
-        tine.rotation_euler = (math.radians(14), 0, math.radians(-18))
-    add("cube", location=(0.32, 0.02, 0.48), scale=(0.07, 0.05, 0.38))
+        tine.rotation_euler = (math.radians(14), 0, math.radians(34))
+    add("cube", location=(0.22, -0.06, 0.58), scale=(0.06, 0.045, 0.5))
     blade = bpy.context.active_object
-    blade.rotation_euler = (0, math.radians(10), math.radians(16))
-    add("cube", mat="deep", bevel_width=0.012, location=(0.48, 0.04, 0.92), scale=(0.07, 0.05, 0.16))
+    blade.rotation_euler = (math.radians(14), 0, math.radians(-38))
+    add("cube", mat="white", bevel_width=0.008, location=(0.55, -0.1, 1.0), scale=(0.09, 0.05, 0.16))
+    handle = bpy.context.active_object
+    handle.rotation_euler = (math.radians(14), 0, math.radians(-38))
 
 
 def living():
@@ -315,48 +350,68 @@ def living():
 
 
 def activities():
-    add("cyl", radius=0.58, depth=0.16, location=(0, 0, 0.2), vertices=40)
-    add("cyl", mat="tint", radius=0.4, depth=0.08, location=(0, 0, 0.3), vertices=40)
-    add("cube", mat="gold", bevel_width=0.008, location=(0.02, -0.06, 0.4), scale=(0.05, 0.2, 0.035))
-    needle = bpy.context.active_object
-    needle.rotation_euler = (0, 0, math.radians(32))
-    add("sphere", mat="deep", bevel_width=0.006, radius=0.055, location=(0, -0.08, 0.42))
+    parts = []
+    parts.append(add("cyl", radius=0.62, depth=0.2, location=(0, 0, 0), vertices=48))
+    parts.append(add("cyl", mat="white", radius=0.46, depth=0.07, location=(0, 0, 0.12), vertices=48))
+    needle = add("cube", mat="deep", bevel_width=0.006, location=(0.1, 0, 0.2), scale=(0.32, 0.055, 0.04))
+    needle.rotation_euler = (0, 0, math.radians(42))
+    parts.append(needle)
+    parts.append(add("sphere", mat="gold", bevel_width=0.004, radius=0.08, location=(0, 0, 0.2)))
+    bpy.ops.object.empty_add(type="PLAIN_AXES", location=(0, 0, 0))
+    empty = bpy.context.active_object
+    for obj in parts:
+        world = obj.matrix_world.copy()
+        obj.parent = empty
+        obj.matrix_world = world
+    empty.rotation_euler = (math.radians(64), 0, math.radians(-8))
+    empty.location = (0, 0, 0.55)
 
 
 def shopping():
-    add("cube", location=(0, 0, 0.48), scale=(0.46, 0.22, 0.4))
-    add("cube", mat="deep", bevel_width=0.01, location=(0, -0.02, 0.78), scale=(0.4, 0.16, 0.05))
-    add("torus", bevel_width=0, major_radius=0.16, minor_radius=0.035, location=(-0.16, 0, 0.98), major_segments=24, minor_segments=10)
-    add("torus", bevel_width=0, major_radius=0.16, minor_radius=0.035, location=(0.16, 0, 0.98), major_segments=24, minor_segments=10)
+    add("cube", location=(0, 0, 0.5), scale=(0.52, 0.24, 0.5))
+    add("cube", mat="white", bevel_width=0.008, location=(0, -0.2, 0.88), scale=(0.38, 0.03, 0.06))
+    for x in (-0.18, 0.18):
+        add("torus", mat="white", bevel_width=0, major_radius=0.18, minor_radius=0.045, location=(x, -0.04, 1.12), major_segments=28, minor_segments=10)
+        handle = bpy.context.active_object
+        handle.rotation_euler = (0, math.radians(90), 0)
 
 
 def rules():
-    add("cube", location=(0, 0, 0.55), scale=(0.42, 0.06, 0.55))
-    add("cube", mat="tint", bevel_width=0.008, location=(0.22, -0.04, 0.95), scale=(0.16, 0.03, 0.14))
-    corner = bpy.context.active_object
-    corner.rotation_euler = (0, math.radians(0), math.radians(0))
-    for z in (0.72, 0.52, 0.32):
-        add("cube", mat="deep", bevel_width=0, location=(-0.02, -0.07, z), scale=(0.24, 0.015, 0.025))
+    add("cube", mat="deep", location=(0, 0.02, 0.58), scale=(0.52, 0.08, 0.64))
+    add("cube", mat="white", bevel_width=0.01, location=(0, -0.08, 0.55), scale=(0.4, 0.04, 0.5))
+    add("cube", mat="gold", bevel_width=0.008, location=(0, -0.1, 1.14), scale=(0.24, 0.05, 0.08))
+    for z in (0.78, 0.55, 0.32):
+        add("cube", mat="blue", bevel_width=0.003, location=(-0.14, -0.14, z), scale=(0.07, 0.02, 0.028))
+        a = bpy.context.active_object
+        a.rotation_euler = (0, 0, math.radians(-40))
+        add("cube", mat="blue", bevel_width=0.003, location=(0.0, -0.14, z + 0.03), scale=(0.12, 0.02, 0.028))
+        b = bpy.context.active_object
+        b.rotation_euler = (0, 0, math.radians(36))
 
 
 def checkout():
-    add("cube", location=(0, 0, 0.62), scale=(0.38, 0.08, 0.58))
-    add("sphere", mat="gold", bevel_width=0.008, radius=0.07, location=(0.16, -0.1, 0.58))
-    add("cube", mat="deep", bevel_width=0.01, location=(0.55, 0, 0.58), scale=(0.16, 0.04, 0.05))
+    add("cube", location=(0, 0, 0.62), scale=(0.42, 0.09, 0.64))
+    add("sphere", mat="gold", bevel_width=0.008, radius=0.08, location=(0.16, -0.14, 0.58))
+    add("cube", mat="white", bevel_width=0.008, location=(0.7, -0.02, 0.58), scale=(0.2, 0.05, 0.07))
+    add("cone", mat="white", bevel_width=0.006, radius1=0.16, radius2=0, depth=0.28, location=(1.02, -0.02, 0.58), vertices=24)
+    arrow = bpy.context.active_object
+    arrow.rotation_euler = (0, math.radians(90), 0)
 
 
 def emergency():
-    add("cyl", radius=0.58, depth=0.18, location=(0, 0, 0.24), vertices=40)
-    add("cube", mat="tint", location=(0, -0.08, 0.48), scale=(0.16, 0.1, 0.42))
-    add("cube", mat="tint", location=(0, -0.08, 0.48), scale=(0.42, 0.1, 0.16))
+    add("cube", location=(0, 0, 0.55), scale=(0.64, 0.14, 0.64))
+    add("cube", mat="white", location=(0, -0.16, 0.55), scale=(0.16, 0.05, 0.44))
+    add("cube", mat="white", location=(0, -0.16, 0.55), scale=(0.44, 0.05, 0.16))
 
 
 def phone():
-    add("cyl", radius=0.13, depth=0.95, location=(0, 0, 0.48), vertices=24)
-    body = bpy.context.active_object
-    body.rotation_euler = (math.radians(90), math.radians(18), math.radians(70))
-    add("sphere", radius=0.24, location=(-0.42, 0.05, 0.7))
-    add("sphere", radius=0.24, location=(0.42, -0.02, 0.28))
+    add("cyl", radius=0.16, depth=0.9, location=(0, 0, 0.55), vertices=24)
+    grip = bpy.context.active_object
+    grip.rotation_euler = (0, math.radians(90), math.radians(16))
+    add("sphere", radius=0.3, location=(-0.5, 0.05, 0.72))
+    add("sphere", radius=0.3, location=(0.5, -0.02, 0.38))
+    add("sphere", mat="white", bevel_width=0.006, radius=0.12, location=(-0.66, -0.14, 0.8))
+    add("sphere", mat="white", bevel_width=0.006, radius=0.12, location=(0.66, -0.18, 0.3))
 
 
 BUILDERS = [
@@ -383,25 +438,57 @@ BUILDERS = [
 
 def clear_meshes():
     for obj in list(bpy.context.scene.objects):
-        if obj.type in {"MESH", "FONT", "CURVE"}:
+        if obj.type in {"MESH", "FONT", "CURVE", "EMPTY"}:
             bpy.data.objects.remove(obj, do_unlink=True)
+
+
+def fit_meshes():
+    objs = [o for o in bpy.context.scene.objects if o.type == "MESH"]
+    if not objs:
+        return
+    pts = []
+    for obj in objs:
+        for corner in obj.bound_box:
+            pts.append(obj.matrix_world @ Vector(corner))
+    minv = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
+    maxv = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
+    span = max(maxv.x - minv.x, maxv.z - minv.z, 0.001)
+    factor = 1.95 / span
+    bpy.ops.object.empty_add(type="PLAIN_AXES", location=(minv + maxv) / 2)
+    empty = bpy.context.active_object
+    empty.name = "Fit"
+    for obj in objs:
+        world = obj.matrix_world.copy()
+        obj.parent = empty
+        obj.matrix_world = world
+    empty.scale = (factor, factor, factor)
+    bpy.context.view_layer.update()
+    pts = []
+    for obj in objs:
+        for corner in obj.bound_box:
+            pts.append(obj.matrix_world @ Vector(corner))
+    minv = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
+    maxv = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
+    empty.location = empty.location + Vector((-(minv.x + maxv.x) / 2, 0, -minv.z))
+    bpy.context.view_layer.update()
 
 
 def render_one(name, builder):
     clear_meshes()
     fresh_materials()
+    builder()
+    fit_meshes()
     add(
         "cyl",
         mat="shadow",
         bevel_width=0,
-        radius=0.86,
-        depth=0.018,
-        location=(0, 0.08, 0.008),
+        radius=0.82,
+        depth=0.02,
+        location=(0, 0.05, 0.01),
         vertices=48,
     )
     shadow = bpy.context.active_object
-    shadow.scale = (1.05, 0.7, 1)
-    builder()
+    shadow.scale = (1.12, 0.7, 1)
     scene = bpy.context.scene
     path = os.path.join(OUT, name + ".png")
     scene.render.filepath = path
