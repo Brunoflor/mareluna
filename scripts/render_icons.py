@@ -322,21 +322,21 @@ def transport():
 
 
 def restaurant():
-    add("cyl", radius=0.78, depth=0.1, location=(0, 0.05, 0.12), vertices=48)
-    add("cyl", mat="white", radius=0.5, depth=0.05, location=(0, -0.02, 0.18), vertices=48)
-    add("cube", location=(-0.2, -0.04, 0.62), scale=(0.075, 0.055, 0.46))
+    add("cyl", radius=0.78, depth=0.1, location=(0, 0.02, 0.1), vertices=48)
+    add("cyl", mat="white", radius=0.48, depth=0.05, location=(0, -0.02, 0.16), vertices=48)
+    add("cube", location=(0, 0, 0.32), scale=(0.55, 0.07, 0.045))
     fork = bpy.context.active_object
-    fork.rotation_euler = (math.radians(14), 0, math.radians(34))
-    for shift in (-0.12, 0.0, 0.12):
-        add("cube", bevel_width=0.003, location=(-0.52 + shift, -0.08, 1.05), scale=(0.04, 0.045, 0.18))
+    fork.rotation_euler = (0, 0, math.radians(42))
+    for shift in (-0.1, 0.0, 0.1):
+        add("cube", bevel_width=0.002, location=(-0.28 + shift * 0.15, 0.22, 0.34), scale=(0.045, 0.16, 0.03))
         tine = bpy.context.active_object
-        tine.rotation_euler = (math.radians(14), 0, math.radians(34))
-    add("cube", location=(0.22, -0.06, 0.58), scale=(0.06, 0.045, 0.5))
+        tine.rotation_euler = (0, 0, math.radians(42))
+    add("cube", location=(0, 0, 0.36), scale=(0.58, 0.055, 0.04))
     blade = bpy.context.active_object
-    blade.rotation_euler = (math.radians(14), 0, math.radians(-38))
-    add("cube", mat="white", bevel_width=0.008, location=(0.55, -0.1, 1.0), scale=(0.09, 0.05, 0.16))
+    blade.rotation_euler = (0, 0, math.radians(-40))
+    add("cube", mat="white", bevel_width=0.006, location=(0.32, -0.28, 0.38), scale=(0.16, 0.07, 0.04))
     handle = bpy.context.active_object
-    handle.rotation_euler = (math.radians(14), 0, math.radians(-38))
+    handle.rotation_euler = (0, 0, math.radians(-40))
 
 
 def living():
@@ -405,13 +405,11 @@ def emergency():
 
 
 def phone():
-    add("cyl", radius=0.16, depth=0.9, location=(0, 0, 0.55), vertices=24)
-    grip = bpy.context.active_object
-    grip.rotation_euler = (0, math.radians(90), math.radians(16))
-    add("sphere", radius=0.3, location=(-0.5, 0.05, 0.72))
-    add("sphere", radius=0.3, location=(0.5, -0.02, 0.38))
-    add("sphere", mat="white", bevel_width=0.006, radius=0.12, location=(-0.66, -0.14, 0.8))
-    add("sphere", mat="white", bevel_width=0.006, radius=0.12, location=(0.66, -0.18, 0.3))
+    arc(0.46, 0.13, 0.55, "blue")
+    add("sphere", radius=0.26, location=(-0.46, 0, 0.55))
+    add("sphere", radius=0.26, location=(0.46, 0, 0.55))
+    add("sphere", mat="white", bevel_width=0.005, radius=0.1, location=(-0.62, -0.08, 0.55))
+    add("sphere", mat="white", bevel_width=0.005, radius=0.1, location=(0.62, -0.08, 0.55))
 
 
 BUILDERS = [
