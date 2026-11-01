@@ -10,20 +10,19 @@
     />
     <meta name="theme-color" content="#00508f" />
     <meta name="color-scheme" content="light" />
-    <link rel="icon" href="favicon.svg?v=1.0.0" type="image/svg+xml" />
-    <link rel="icon" href="favicon-32.png?v=1.0.0" sizes="32x32" type="image/png" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1.0.0" />
-    <link rel="preload" as="image" href="icons/logo.svg?v=1.0.0" fetchpriority="high" />
-    <link rel="preload" as="image" href="photos/hero-800.webp?v=1.0.0" type="image/webp" />
+    <link rel="icon" href="favicon.svg?v=1.0.1" type="image/svg+xml" />
+    <link rel="icon" href="favicon-32.png?v=1.0.1" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1.0.1" />
+    <link rel="preload" as="image" href="icons/logo.svg?v=1.0.1" fetchpriority="high" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Naskh+Arabic:wght@500;600;700&family=Noto+Serif+JP:wght@500;600&family=Noto+Serif+SC:wght@500;600&family=Simonetta:ital,wght@0,400;0,900;1,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=1.0.0" />
+    <link rel="stylesheet" href="styles.css?v=1.0.1" />
     <script>
-      window.MARELUNA_VERSION = "1.0.0";
+      window.MARELUNA_VERSION = "1.0.1";
       (function () {
         var codes = { it: 1, en: 1, es: 1, fr: 1, de: 1, pt: 1, zh: 1, ja: 1, ar: 1 };
         function match(tag) {
@@ -71,7 +70,7 @@
       <img
         id="intro-logo"
         class="intro-logo"
-        src="icons/logo.svg?v=1.0.0"
+        src="icons/logo.svg?v=1.0.1"
         alt=""
         width="300"
         height="318"
@@ -83,43 +82,43 @@
     <noscript>
       <style>
         #intro { display: none; }
-        html:not(.intro-seen) .logo,
-        html:not(.intro-seen) .hero { visibility: visible; opacity: 1; }
+        html:not(.intro-seen) .logo { visibility: visible; }
+        html:not(.intro-seen) .wrap { opacity: 1; }
       </style>
     </noscript>
     <div class="wrap" id="wrap">
       <a class="skip" id="skip" href="#sections">Vai alle sezioni</a>
       <header class="site-header">
         <div class="header-bar">
+          <div class="sea" id="sea">
+            <button type="button" id="sea-toggle" class="sea-toggle" aria-pressed="false">
+              <span class="sea-port" aria-hidden="true">
+                <svg viewBox="0 0 48 48" width="40" height="40">
+                  <circle cx="24" cy="24" r="15.5" fill="#ffffff" stroke="#00508f" stroke-width="2.4" />
+                  <circle cx="24" cy="24" r="9.5" fill="#dee8f1" />
+                  <path class="sea-play" d="M21.2 17.2v13.6L32 24z" fill="#00508f" />
+                  <path class="sea-pause" d="M19.2 17.2h3.6v13.6h-3.6zm6 0h3.6v13.6h-3.6z" fill="#00508f" />
+                </svg>
+              </span>
+              <span id="sea-label" class="sea-label"></span>
+            </button>
+            <label class="sea-volume">
+              <span id="sea-volume-label" class="visually-hidden"></span>
+              <input id="sea-volume" type="range" min="0" max="100" value="70" />
+            </label>
+          </div>
           <div id="lang-switch" class="lang"></div>
         </div>
         <h1 class="logo-lockup">
           <img
             class="logo"
-            src="icons/logo.svg?v=1.0.0"
+            src="icons/logo.svg?v=1.0.1"
             alt="Mareluna Suite de Charme"
             width="300"
             height="318"
           />
         </h1>
-        <p id="welcome-line" class="welcome-line"></p>
       </header>
-      <figure class="hero">
-        <picture>
-          <source
-            type="image/webp"
-            srcset="photos/hero-800.webp?v=1.0.0 800w, photos/hero.webp?v=1.0.0 1200w"
-            sizes="(max-width: 900px) 100vw, 960px"
-          />
-          <img
-            id="hero-img"
-            src="photos/hero.jpg?v=1.0.0"
-            alt="Finestra aperta sul Golfo di Napoli"
-            width="1200"
-            height="801"
-          />
-        </picture>
-      </figure>
       <main>
         <noscript>
           <p class="noscript">
@@ -129,6 +128,7 @@
         <div id="sections"></div>
         <p id="home-address" class="home-address"></p>
         <p id="home-phone" class="home-phone"></p>
+        <p id="sea-credit" class="sea-credit"></p>
       </main>
     </div>
 
@@ -149,7 +149,8 @@
     </dialog>
     <p id="live" class="visually-hidden" aria-live="polite"></p>
 
-    <script src="content.js?v=1.0.0"></script>
-    <script src="app.js?v=1.0.0"></script>
+    <audio id="sea-audio" loop preload="none" src="audio/lungomare.mp3?v=1.0.1"></audio>
+    <script src="content.js?v=1.0.1"></script>
+    <script src="app.js?v=1.0.1"></script>
   </body>
 </html>

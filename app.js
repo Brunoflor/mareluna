@@ -114,10 +114,31 @@
     return path + (path.indexOf("?") === -1 ? "?v=" : "&v=") + version;
   }
 
+  var RENDERED = {
+    concierge: 1,
+    colazione: 1,
+    bed: 1,
+    palazzo: 1,
+    checkin: 1,
+    wifi: 1,
+    services: 1,
+    pin: 1,
+    parking: 1,
+    transport: 1,
+    restaurant: 1,
+    living: 1,
+    activities: 1,
+    shopping: 1,
+    rules: 1,
+    checkout: 1,
+    emergency: 1,
+    phone: 1,
+  };
+
   function glyph(name, className) {
     var img = document.createElement("img");
     img.className = className || "tile-glyph";
-    img.src = asset("icons/" + name + ".svg");
+    img.src = asset("icons/" + name + "." + (RENDERED[name] ? "webp" : "svg"));
     img.alt = "";
     img.decoding = "async";
     img.draggable = false;
@@ -160,26 +181,6 @@
     note.className = "pending";
     note.textContent = text(section.pending);
     return note;
-  }
-
-  function figure(image) {
-    if (!image) return null;
-    var fig = document.createElement("figure");
-    fig.className = "photo";
-    var pic = document.createElement("picture");
-    if (image.webp) {
-      var source = document.createElement("source");
-      source.type = "image/webp";
-      source.srcset = asset(image.webp);
-      pic.appendChild(source);
-    }
-    var img = document.createElement("img");
-    img.src = asset(image.src);
-    img.alt = text(image.alt);
-    img.decoding = "async";
-    pic.appendChild(img);
-    fig.appendChild(pic);
-    return fig;
   }
 
   function closeLangMenus(except) {
@@ -416,8 +417,6 @@
 
   function renderLocation(section) {
     var wrap = document.createElement("div");
-    var photo = figure(section.image);
-    if (photo) wrap.appendChild(photo);
     renderParagraphs(section, wrap);
     wrap.appendChild(renderAddressBlock());
     if (content.property.coordinates) {
@@ -438,8 +437,6 @@
 
   function renderPlaces(section) {
     var wrap = document.createElement("div");
-    var photo = figure(section.image);
-    if (photo) wrap.appendChild(photo);
     renderParagraphs(section, wrap);
     var list = document.createElement("ul");
     list.className = "places";
@@ -472,8 +469,6 @@
 
   function renderList(section) {
     var wrap = document.createElement("div");
-    var photo = figure(section.image);
-    if (photo) wrap.appendChild(photo);
     renderParagraphs(section, wrap);
     renderBullets(section, wrap);
     var list = document.createElement("ul");
@@ -503,8 +498,6 @@
   function renderNotes(section) {
     var wrap = document.createElement("div");
     wrap.className = "notes";
-    var photo = figure(section.image);
-    if (photo) wrap.appendChild(photo);
     renderParagraphs(section, wrap);
     renderBullets(section, wrap);
     var note = pendingNote(section);
@@ -569,12 +562,27 @@
     body.scrollTop = 0;
   }
 
-  function renderHome() {
-    var welcome = document.getElementById("welcome-line");
-    welcome.textContent = t("welcome");
-    var hero = document.getElementById("hero-img");
-    if (hero) hero.alt = t("heroAlt");
+  function renderSeaCredit() {
+    var node = document.getElementById("sea-credit");
+    if (!node) return;
+    node.replaceChildren();
+    node.appendChild(document.createTextNode(t("seaCredit") + " "));
+    var source = document.createElement("a");
+    source.href = content.property.seaSourceUrl;
+    source.target = "_blank";
+    source.rel = "noopener noreferrer";
+    source.textContent = "Freesound";
+    node.appendChild(source);
+    node.appendChild(document.createTextNode(" · "));
+    var license = document.createElement("a");
+    license.href = content.property.seaLicenseUrl;
+    license.target = "_blank";
+    license.rel = "noopener noreferrer";
+    license.textContent = "CC0";
+    node.appendChild(license);
+  }
 
+  function renderHome() {
     var address = document.getElementById("home-address");
     address.replaceChildren();
     address.appendChild(icon("pin", "home-pin"));
@@ -614,10 +622,17 @@
     document.getElementById("skip").textContent = t("skip");
     var skipIntro = document.getElementById("intro-skip");
     if (skipIntro) skipIntro.textContent = t("skipIntro");
+    var seaToggle = document.getElementById("sea-toggle");
+    var seaLabel = document.getElementById("sea-label");
+    var seaVolumeLabel = document.getElementById("sea-volume-label");
+    if (seaLabel) seaLabel.textContent = t("seaLabel");
+    if (seaToggle) seaToggle.setAttribute("aria-label", t("seaLabel"));
+    if (seaVolumeLabel) seaVolumeLabel.textContent = t("seaVolume");
     updateLangSwitch(document.getElementById("lang-switch"));
     updateLangSwitch(document.getElementById("sheet-lang"));
     renderGrid();
     renderHome();
+    renderSeaCredit();
     renderSheet();
     if (options.announce) {
       document.getElementById("live").textContent = langName(state.lang);
@@ -805,6 +820,96 @@
     begin();
   }
 
+  function bindSea() {
+    var button = document.getElementById("sea-toggle");
+    var audio = document.getElementById("sea-audio");
+    var slider = document.getElementById("sea-volume");
+    if (!button || !audio || !slider) return;
+    var stored = { on: false, volume: 0.7 };
+    try {
+      var raw = localStorage.getItem("mareluna-sea");
+      if (raw) stored = JSON.parse(raw);
+    } catch (e) {
+      stored = { on: false, volume: 0.7 };
+    }
+    var volume = typeof stored.volume === "number" ? stored.volume : 0.7;
+    volume = Math.max(0, Math.min(1, volume));
+    slider.value = String(Math.round(volume * 100));
+    audio.volume = 0;
+    audio.loop = true;
+    var playing = false;
+    var fadeToken = 0;
+
+    function save(on) {
+      try {
+        localStorage.setItem(
+          "mareluna-sea",
+          JSON.stringify({ on: on, volume: Number(slider.value) / 100 })
+        );
+      } catch (e) {
+        /* private mode */
+      }
+    }
+
+    function level() {
+      return Math.max(0, Math.min(1, Number(slider.value) / 100));
+    }
+
+    function setPressed(on) {
+      playing = on;
+      button.setAttribute("aria-pressed", on ? "true" : "false");
+      button.classList.toggle("is-playing", on);
+    }
+
+    function fadeTo(target, done) {
+      var token = ++fadeToken;
+      var from = audio.volume;
+      var start = performance.now();
+      function step(now) {
+        if (token !== fadeToken) return;
+        var amount = Math.min(1, (now - start) / 700);
+        var next = from + (target - from) * amount;
+        if (next < 0) next = 0;
+        if (next > 1) next = 1;
+        audio.volume = next;
+        if (amount < 1) window.requestAnimationFrame(step);
+        else if (done) done();
+      }
+      window.requestAnimationFrame(step);
+    }
+
+    button.addEventListener("click", function () {
+      if (playing) {
+        save(false);
+        setPressed(false);
+        fadeTo(0, function () {
+          if (!playing) audio.pause();
+        });
+        return;
+      }
+      save(true);
+      setPressed(true);
+      var started = audio.play();
+      function rise() {
+        if (playing) fadeTo(level());
+      }
+      if (started && started.then) {
+        started.then(rise).catch(function () {
+          setPressed(false);
+          save(false);
+        });
+      } else {
+        rise();
+      }
+    });
+
+    slider.addEventListener("input", function () {
+      var next = level();
+      save(playing);
+      if (playing) audio.volume = next;
+    });
+  }
+
   function bind() {
     var dialog = document.getElementById("sheet");
     document.getElementById("sheet-back").addEventListener("click", function () {
@@ -836,6 +941,7 @@
   state.lang = isLang(document.documentElement.dataset.lang)
     ? document.documentElement.dataset.lang
     : detectLang();
+  bindSea();
   bind();
   render();
   playIntro();
